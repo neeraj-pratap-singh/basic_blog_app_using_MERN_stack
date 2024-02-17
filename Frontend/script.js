@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function getAllBlogs(){
     const authToken = localStorage.getItem('token');
     console.log(authToken)
-    fetch("http://localhost:5000/blogs", {
+    fetch("http://localhost:5500/blogs", {
       method: "GET",
       headers: {
         Authorization: "Bearer",
@@ -34,7 +34,7 @@ function login(event) {
 
   // Perform login API request
   // Example using fetch API
-  fetch("http://localhost:5000/auth/login", {
+  fetch("http://localhost:5500/auth/login", {
     method: "POST",
     headers: {
         'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ function register(event) {
   const password = document.getElementById("register-password").value;
 
   // Perform register API request
-  fetch("http://localhost:5000/auth/signup", {
+  fetch("http://localhost:5500/auth/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

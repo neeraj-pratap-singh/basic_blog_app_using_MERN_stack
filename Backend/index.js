@@ -2,14 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors =  require('cors')
 const app = express();
-const PORT = process.env.PORT || 5000;
-const MONGODB_URI = 'mongodb+srv://harshityadav:JxsV3y4V7mWl8g1I@cluster0.s9trpdc.mongodb.net/blog2';
+const PORT = process.env.PORT || 5500;
+const config = require('./config/config');
 const dotenv = require("dotenv");
 dotenv.config();
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(MONGODB_URI).then(() => {
+mongoose.connect(config.MONGODB_URI).then(() => {
     console.log('Connected to MongoDB');
 }).catch((err) => {
     console.error('Error connecting to MongoDB', err);
