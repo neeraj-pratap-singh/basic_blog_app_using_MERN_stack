@@ -1,31 +1,84 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("login-form").addEventListener("submit", login);
   document.getElementById("register-form").addEventListener("submit", register);
-    getAllBlogs();
+  document.getElementById("get-blogs-btn").addEventListener("click", getAllBlogs);
+  document.getElementById("create-blog-form").addEventListener("submit", createBlog);
 });
 
-function getAllBlogs(){
-    const authToken = localStorage.getItem('token');
-    console.log(authToken)
-    fetch("http://localhost:5500/blogs", {
+function createBlog(event) {
+  event.preventDefault();
+  const title = document.getElementById("blog-title").value;
+  const content = document.getElementById("blog-content").value;
+  const authToken = localStorage.getItem('token');
+  
+  fetch("http://localhost:5500/blogs", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`
+      },
+      body: JSON.stringify({ title, content }),
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data);
+      document.getElementById("message").innerText = "Blog created successfully";
+      // Optionally clear form fields and fetch all blogs to update the list
+      document.getElementById("blog-title").value = '';
+      document.getElementById("blog-content").value = '';
+      getAllBlogs(); // Refresh the blogs list
+  })
+  .catch(error => {
+      console.error("Error:", error);
+      document.getElementById("message").innerText = "Failed to create blog";
+  });
+}
+
+// Modify the getAllBlogs function's fetch headers to include the Bearer token correctly
+function getAllBlogs() {
+  const authToken = localStorage.getItem('token');
+  fetch("http://localhost:5500/blogs", {
       method: "GET",
       headers: {
-        Authorization: "Bearer",
-        authToken,
-        "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json",
       },
-    })
-    .then((response) => {
-    if (response.ok) {
-        return response.json();
-    } else {
-        throw new Error("Failed to fetch blogs");
-    }
-    })
-    .then((data) => {
-    console.log(data);
-    });
+  })
+  .then(response => response.json())
+  .then(data => {
+      const blogsContainer = document.getElementById("blogs-list");
+      blogsContainer.innerHTML = ''; // Clear existing blogs
+      data.forEach(blog => {
+          const blogElement = document.createElement("div");
+          blogElement.innerText = `${blog.title}: ${blog.content}`;
+          blogsContainer.appendChild(blogElement);
+      });
+  })
+  .catch(error => console.error("Failed to fetch blogs", error));
 }
+
+// function getAllBlogs(){
+//     const authToken = localStorage.getItem('token');
+//     console.log(authToken)
+//     fetch("http://localhost:5500/blogs", {
+//       method: "GET",
+//       headers: {
+//         Authorization: "Bearer",
+//         authToken,
+//         "Content-Type": "application/json",
+//       },
+//     })
+//     .then((response) => {
+//     if (response.ok) {
+//         return response.json();
+//     } else {
+//         throw new Error("Failed to fetch blogs");
+//     }
+//     })
+//     .then((data) => {
+//     console.log(data);
+//     });
+// }
 
 function login(event) {
   event.preventDefault();
